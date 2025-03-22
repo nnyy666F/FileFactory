@@ -1,0 +1,17 @@
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.csproj.GenerateResource.cache
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.GeneratedMSBuildEditorConfig.editorconfig
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.AssemblyInfoInputs.cache
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.AssemblyInfo.cs
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.csproj.CoreCompileInputs.cache
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.Form1.resources
+E:\nnyy\temp\project\c#\FileFactory\bin\Debug\net8.0-windows\FileFactory.exe
+E:\nnyy\temp\project\c#\FileFactory\bin\Debug\net8.0-windows\FileFactory.deps.json
+E:\nnyy\temp\project\c#\FileFactory\bin\Debug\net8.0-windows\FileFactory.runtimeconfig.json
+E:\nnyy\temp\project\c#\FileFactory\bin\Debug\net8.0-windows\FileFactory.dll
+E:\nnyy\temp\project\c#\FileFactory\bin\Debug\net8.0-windows\FileFactory.pdb
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.dll
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\refint\FileFactory.dll
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.pdb
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.genruntimeconfig.cache
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\ref\FileFactory.dll
+E:\nnyy\temp\project\c#\FileFactory\obj\Debug\net8.0-windows\FileFactory.ProcessingWindow.resources
