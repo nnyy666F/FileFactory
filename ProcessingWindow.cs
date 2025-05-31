@@ -19,6 +19,8 @@ namespace FileFactory
 		public event EventHandler<int> ProgressChanged;
 		public event EventHandler<(string file, int lines, int processedLines, int totalLines)> FileProcessing;
 
+		private Stack<List<string>> undoStack = new Stack<List<string>>();
+		private Stack<List<string>> redoStack = new Stack<List<string>>();
 
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		private static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes,
@@ -41,6 +43,7 @@ namespace FileFactory
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
 			public string szTypeName;
 		}
+
 		protected override CreateParams CreateParams
 		{
 			get
@@ -86,9 +89,72 @@ namespace FileFactory
 			listView.Columns.Add("类型", 80);
 			listView.Columns.Add("名称", 200);
 			listView.Columns.Add("路径", 500);
+			listView.KeyDown += ListView_KeyDown;
 
 			this.Controls.Add(menuStrip);
 			this.Controls.Add(listView);
+		}
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData == (Keys.Control | Keys.Z))
+			{
+				Undo();
+				return true;
+			}
+			else if (keyData == (Keys.Control | Keys.Y))
+			{
+				Redo();
+				return true;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void Undo()
+		{
+			if (undoStack.Count > 0)
+			{
+				redoStack.Push(new List<string>(filePaths));
+				filePaths = undoStack.Pop();
+				UpdateListView();
+				mergeMenuItem.Enabled = filePaths.Count > 0;
+			}
+		}
+
+		private void Redo()
+		{
+			if (redoStack.Count > 0)
+			{
+				undoStack.Push(new List<string>(filePaths));
+				filePaths = redoStack.Pop();
+				UpdateListView();
+				mergeMenuItem.Enabled = filePaths.Count > 0;
+			}
+		}
+
+		private void UpdateListView()
+		{
+			listView.Items.Clear();
+			foreach (string path in filePaths)
+			{
+				AddFileToList(path);
+			}
+		}
+
+		private void ListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+			{
+				undoStack.Push(new List<string>(filePaths));
+				redoStack.Clear();
+				foreach (ListViewItem item in listView.SelectedItems)
+				{
+					string path = item.Tag.ToString();
+					filePaths.Remove(path);
+					listView.Items.Remove(item);
+				}
+				mergeMenuItem.Enabled = filePaths.Count > 0;
+			}
 		}
 
 		private Icon GetFileIcon(string path)
@@ -152,6 +218,8 @@ namespace FileFactory
 
 			this.DragDrop += (s, e) =>
 			{
+				undoStack.Push(new List<string>(filePaths));
+				redoStack.Clear();
 				string[] items = (string[])e.Data.GetData(DataFormats.FileDrop);
 				foreach (string path in items)
 				{
@@ -178,7 +246,7 @@ namespace FileFactory
 					}
 					catch (Exception ex)
 					{
-						MessageBox.Show($"合并失败：{ex.Message}", "错误",MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show($"合并失败：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 				}
 			}
