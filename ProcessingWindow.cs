@@ -15,6 +15,7 @@ namespace FileFactory
 		private ListView listView;
 		private ImageList imageList;
 		private ToolStripMenuItem mergeMenuItem;
+		private CheckBox appendCheckBox;
 		public event EventHandler<int> ProcessingStarted;
 		public event EventHandler<int> ProgressChanged;
 		public event EventHandler<(string file, int lines, int processedLines, int totalLines)> FileProcessing;
@@ -78,6 +79,15 @@ namespace FileFactory
 			mergeMenuItem.Click += StartProcessing;
 			fileMenu.DropDownItems.Add(mergeMenuItem);
 			menuStrip.Items.Add(fileMenu);
+
+			appendCheckBox = new CheckBox
+			{
+				Text = "追加写入",
+				Dock = DockStyle.Top,
+				AutoSize = true
+			};
+
+
 			listView = new ListView
 			{
 				Dock = DockStyle.Fill,
@@ -92,6 +102,7 @@ namespace FileFactory
 			listView.KeyDown += ListView_KeyDown;
 
 			this.Controls.Add(menuStrip);
+			this.Controls.Add(appendCheckBox);
 			this.Controls.Add(listView);
 		}
 
@@ -242,7 +253,7 @@ namespace FileFactory
 				{
 					try
 					{
-						MergeFiles(dialog.FileName);
+						MergeFiles(dialog.FileName, appendCheckBox.Checked);
 					}
 					catch (Exception ex)
 					{
@@ -252,7 +263,7 @@ namespace FileFactory
 			}
 		}
 
-		private void MergeFiles(string outputPath)
+		private void MergeFiles(string outputPath, bool append)
 		{
 			int totalLines = CalculateTotalLines();
 			int processedLines = 0;
@@ -260,7 +271,17 @@ namespace FileFactory
 
 			ProcessingStarted?.Invoke(this, totalLines);
 
-			using (var output = File.Create(outputPath))
+			FileStream output;
+			if (append && File.Exists(outputPath) && new FileInfo(outputPath).Length > 0)
+			{
+				output = File.Open(outputPath, FileMode.Append);
+			}
+			else
+			{
+				output = File.Create(outputPath);
+			}
+
+			using (output)
 			{
 				foreach (string path in filePaths)
 				{
